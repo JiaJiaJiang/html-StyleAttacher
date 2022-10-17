@@ -39,6 +39,10 @@
   class StyleAttacher {
     //更改stylesheet的url时先注销旧的url
 
+    /**
+     * Creates an instance of StyleAttacher.
+     * @param {string} name
+     */
     constructor(name) {
       _defineProperty(this, "_createdObjectURL", null);
       _defineProperty(this, "_stylesheets", new Set());

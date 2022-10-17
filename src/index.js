@@ -24,6 +24,10 @@ class StyleAttacher{
 	_styles=new Set();
 	_el_link;
 	_el_style;
+	/**
+	 * Creates an instance of StyleAttacher.
+	 * @param {string} name
+	 */
 	constructor(name){
 		this.name=name||'attahcedStyles_'+(Math.random()*0xffffff|0);
 		attachers.push(this);

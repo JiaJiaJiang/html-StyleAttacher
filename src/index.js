@@ -1,10 +1,11 @@
 
 const attachers=[];
 //elements created here may be removed for some reason, so set a timer for checking element stat
+let checkerTimer;
 function styleChecker(){
+	clearTimeout(checkerTimer);
 	for(let attacher of attachers){
 		if(attacher._stylesheets.size>0 && !attacher._el_link.isConnected){
-			attacher._el_link.setAttribute('from',attacher.name);
 			document.head.appendChild(attacher._el_link);
 		}
 		if(attacher._styles.size>0 && !attacher._el_style.isConnected){
@@ -12,9 +13,9 @@ function styleChecker(){
 			document.head.appendChild(attacher._el_style);
 		}
 	}
-	requestAnimationFrame(()=>{
-		setTimeout(styleChecker,500);
-	});
+	checkerTimer=setTimeout(()=>{
+		requestAnimationFrame(styleChecker);
+	},500);
 }
 styleChecker();
 
@@ -40,9 +41,10 @@ class StyleAttacher{
 		}
 		let url=URL.createObjectURL(new Blob([[...this._stylesheets].join('\n')],{type:'text/css'}));
 		if(!this._el_link){
-			this._el_link=document.createElement('link');
-			this._el_link.rel='stylesheet';
-			this._el_link.type="text/css";
+			const l=this._el_link=document.createElement('link');
+			l.rel='stylesheet';
+			l.type="text/css";
+			l.setAttribute('from',this.name);
 		}else{
 			URL.revokeObjectURL(this._el_link.href);
 		}
@@ -50,6 +52,11 @@ class StyleAttacher{
 		document.head.appendChild(this._el_link);
 	}
 	appendStyle(csstext){
+		if(!this._el_style){
+			this._el_style=document.createElement('style');
+			this._el_style.type="text/css";
+			this._el_style.setAttribute('from',this.name);
+		}
 		if(csstext instanceof Array === false)csstext=[csstext];
 		for(let css of csstext){
 			if(!(css=css.trim()))continue;
